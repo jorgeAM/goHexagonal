@@ -3,7 +3,7 @@ package mooc
 import "context"
 
 type CourseRepository interface {
-	save(ctx context.Context, course Course) error
+	Save(ctx context.Context, course Course) error
 }
 
 type Course struct {
