@@ -66,4 +66,26 @@ func TestCreateHandler(t *testing.T) {
 
 		assert.Equal(t, http.StatusCreated, res.StatusCode)
 	})
+
+	t.Run("given an invalid id it returns 400", func(t *testing.T) {
+		createCourseReq := createRequest{
+			ID:       "1",
+			Name:     "Demo Course",
+			Duration: "10 months",
+		}
+
+		b, err := json.Marshal(createCourseReq)
+		require.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodPost, "/courses", bytes.NewBuffer(b))
+		require.NoError(t, err)
+
+		rec := httptest.NewRecorder()
+		r.ServeHTTP(rec, req)
+
+		res := rec.Result()
+		defer res.Body.Close()
+
+		assert.Equal(t, http.StatusBadRequest, res.StatusCode)
+	})
 }
