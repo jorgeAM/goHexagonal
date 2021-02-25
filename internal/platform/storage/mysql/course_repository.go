@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/huandu/go-sqlbuilder"
-	mooc "github.com/jorgeAM/goHexagonal/internal/platform"
+	mooc "github.com/jorgeAM/goHexagonal/internal"
 )
 
 type courseRepository struct {

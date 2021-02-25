@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	mooc "github.com/jorgeAM/goHexagonal/internal/platform"
+	mooc "github.com/jorgeAM/goHexagonal/internal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

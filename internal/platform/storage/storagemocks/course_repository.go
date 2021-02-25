@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
-	mooc "github.com/jorgeAM/goHexagonal/internal/platform"
+	mooc "github.com/jorgeAM/goHexagonal/internal"
 )
 
 type CourseRepository struct {

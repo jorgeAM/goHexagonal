@@ -6,6 +6,7 @@ import (
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jorgeAM/goHexagonal/internal/creating"
 	"github.com/jorgeAM/goHexagonal/internal/platform/server"
 	"github.com/jorgeAM/goHexagonal/internal/platform/storage/mysql"
 )
@@ -31,7 +32,8 @@ func main() {
 	}
 
 	repository := mysql.NewCourseRepository(db)
-	srv := server.NewServer(host, port, repository)
+	service := creating.NewCourseService(repository)
+	srv := server.NewServer(host, port, service)
 
 	if err := srv.Run(); err != nil {
 		log.Fatalf("something got wrong when we try to run web server %v", err)

@@ -4,23 +4,22 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jorgeAM/goHexagonal/internal/creating"
 	"github.com/jorgeAM/goHexagonal/internal/platform/server/handler/courses"
 	"github.com/jorgeAM/goHexagonal/internal/platform/server/handler/ping"
-
-	mooc "github.com/jorgeAM/goHexagonal/internal/platform"
 )
 
 type Server struct {
-	httpAdrr         string
-	engine           *gin.Engine
-	courseRepository mooc.CourseRepository
+	httpAdrr      string
+	engine        *gin.Engine
+	courseService creating.CourseService
 }
 
-func NewServer(host string, port uint, courseRepository mooc.CourseRepository) *Server {
+func NewServer(host string, port uint, creatingCourseService creating.CourseService) *Server {
 	s := &Server{
-		httpAdrr:         fmt.Sprintf("%v:%d", host, port),
-		engine:           gin.New(),
-		courseRepository: courseRepository,
+		httpAdrr:      fmt.Sprintf("%v:%d", host, port),
+		engine:        gin.New(),
+		courseService: creatingCourseService,
 	}
 
 	s.registerRoutes()
@@ -35,5 +34,5 @@ func (s *Server) Run() error {
 
 func (s *Server) registerRoutes() {
 	s.engine.GET("/ping", ping.PingHandler())
-	s.engine.POST("/courses", courses.CreateHandler(s.courseRepository))
+	s.engine.POST("/courses", courses.CreateHandler(s.courseService))
 }

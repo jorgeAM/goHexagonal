@@ -12,17 +12,19 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/jorgeAM/goHexagonal/internal/creating"
 	"github.com/jorgeAM/goHexagonal/internal/platform/storage/storagemocks"
 )
 
 func TestCreateHandler(t *testing.T) {
 	courseRepository := new(storagemocks.CourseRepository)
 	courseRepository.On("Save", mock.Anything, mock.AnythingOfType("mooc.Course")).Return(nil)
+	creatingCourseService := creating.NewCourseService(courseRepository)
 
 	gin.SetMode(gin.TestMode)
 	r := gin.New()
 
-	r.POST("/courses", CreateHandler(courseRepository))
+	r.POST("/courses", CreateHandler(creatingCourseService))
 
 	t.Run("given an invalid request it returns 400", func(t *testing.T) {
 		createCourseReq := createRequest{
