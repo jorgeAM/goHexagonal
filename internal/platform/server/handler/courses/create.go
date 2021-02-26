@@ -8,6 +8,7 @@ import (
 
 	mooc "github.com/jorgeAM/goHexagonal/internal"
 	"github.com/jorgeAM/goHexagonal/internal/creating"
+	"github.com/jorgeAM/goHexagonal/internal/kit/command"
 )
 
 type createRequest struct {
@@ -16,7 +17,7 @@ type createRequest struct {
 	Duration string `json:"duration" binding:"required"`
 }
 
-func CreateHandler(creatingCourseService creating.CourseService) gin.HandlerFunc {
+func CreateHandler(commandBus command.Bus) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var req createRequest
 
@@ -25,7 +26,11 @@ func CreateHandler(creatingCourseService creating.CourseService) gin.HandlerFunc
 			return
 		}
 
-		err := creatingCourseService.CreateCourse(ctx, req.ID, req.Name, req.Duration)
+		err := commandBus.Dispatch(ctx, creating.NewCourseCommand(
+			req.ID,
+			req.Name,
+			req.Duration,
+		))
 
 		if err != nil {
 			switch {
