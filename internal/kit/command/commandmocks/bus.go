@@ -17,6 +17,6 @@ func (b *Bus) Dispatch(ctx context.Context, cmd command.Command) error {
 	return args.Error(0)
 }
 
-func (b *Bus) Register(_a0 command.Type, _a1 command.Handler) {
-	b.Called(_a0, _a1)
+func (b *Bus) Register(cmdType command.Type, handler command.Handler) {
+	b.Called(cmdType, handler)
 }
