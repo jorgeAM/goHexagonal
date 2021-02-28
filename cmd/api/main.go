@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jorgeAM/goHexagonal/internal/creating"
@@ -13,8 +15,9 @@ import (
 )
 
 const (
-	host = "localhost"
-	port = 3000
+	host            = "localhost"
+	port            = 3000
+	shutdownTimeout = 10 * time.Second
 
 	dbUser = "root"
 	dbPass = "123456"
@@ -40,9 +43,9 @@ func main() {
 	createCourseCommandHandler := creating.NewCourseCommandHandler(service)
 	commandBus.Register(creating.CourseCommandType, createCourseCommandHandler)
 
-	srv := server.NewServer(host, port, commandBus)
+	ctx, srv := server.NewServer(context.Background(), host, port, shutdownTimeout, commandBus)
 
-	if err := srv.Run(); err != nil {
+	if err := srv.Run(ctx); err != nil {
 		log.Fatalf("something got wrong when we try to run web server %v", err)
 	}
 }
