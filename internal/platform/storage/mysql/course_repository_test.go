@@ -4,12 +4,15 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	mooc "github.com/jorgeAM/goHexagonal/internal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+const timeout = 10 * time.Second
 
 func TestCourseRepositoryWithSuccess(t *testing.T) {
 	courseID, courseName, courseDuration := "37a0f027-15e6-47cc-a5d2-64183281087e", "Test Course", "10 months"
@@ -28,7 +31,7 @@ func TestCourseRepositoryWithSuccess(t *testing.T) {
 		courseDuration,
 	).WillReturnResult(sqlmock.NewResult(1, 1))
 
-	repository := NewCourseRepository(db)
+	repository := NewCourseRepository(db, timeout)
 	err = repository.Save(context.Background(), *course)
 
 	assert.NoError(t, mock.ExpectationsWereMet())
@@ -53,7 +56,7 @@ func TestCourseRepositoryWithError(t *testing.T) {
 		courseDuration,
 	).WillReturnError(errors.New("something got wrong"))
 
-	repository := NewCourseRepository(db)
+	repository := NewCourseRepository(db, timeout)
 	err = repository.Save(context.Background(), *course)
 
 	assert.NoError(t, mock.ExpectationsWereMet())

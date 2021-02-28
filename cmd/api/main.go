@@ -19,11 +19,12 @@ const (
 	port            = 3000
 	shutdownTimeout = 10 * time.Second
 
-	dbUser = "root"
-	dbPass = "123456"
-	dbHost = "localhost"
-	dbPort = "3306"
-	dbName = "courses"
+	dbUser    = "root"
+	dbPass    = "123456"
+	dbHost    = "localhost"
+	dbPort    = "3306"
+	dbName    = "courses"
+	dbTimeout = 5 * time.Second
 )
 
 func main() {
@@ -35,7 +36,7 @@ func main() {
 		log.Fatalf("something got wrong when we try to connect to database %v", err)
 	}
 
-	repository := mysql.NewCourseRepository(db)
+	repository := mysql.NewCourseRepository(db, dbTimeout)
 	service := creating.NewCourseService(repository)
 
 	commandBus := inmemory.NewCommadBus()
