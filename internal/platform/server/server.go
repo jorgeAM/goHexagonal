@@ -61,7 +61,7 @@ func (s *Server) Run(ctx context.Context) error {
 }
 
 func (s *Server) registerRoutes() {
-	s.engine.Use(logging.Middlewares(), recovery.Middleware())
+	s.engine.Use(logging.Middleware(), recovery.Middleware())
 
 	s.engine.GET("/ping", ping.PingHandler())
 	s.engine.POST("/courses", courses.CreateHandler(s.commandBus))
