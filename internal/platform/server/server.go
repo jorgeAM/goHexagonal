@@ -13,6 +13,8 @@ import (
 	"github.com/jorgeAM/goHexagonal/internal/kit/command"
 	"github.com/jorgeAM/goHexagonal/internal/platform/server/handler/courses"
 	"github.com/jorgeAM/goHexagonal/internal/platform/server/handler/ping"
+	"github.com/jorgeAM/goHexagonal/internal/platform/server/middleware/logging"
+	"github.com/jorgeAM/goHexagonal/internal/platform/server/middleware/recovery"
 )
 
 type Server struct {
@@ -59,6 +61,8 @@ func (s *Server) Run(ctx context.Context) error {
 }
 
 func (s *Server) registerRoutes() {
+	s.engine.Use(logging.Middlewares(), recovery.Middleware())
+
 	s.engine.GET("/ping", ping.PingHandler())
 	s.engine.POST("/courses", courses.CreateHandler(s.commandBus))
 }
