@@ -5,9 +5,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/joho/godotenv/autoload"
+
 	"github.com/jorgeAM/goHexagonal/internal/creating"
 	"github.com/jorgeAM/goHexagonal/internal/platform/bus/inmemory"
 	"github.com/jorgeAM/goHexagonal/internal/platform/server"
@@ -15,19 +19,21 @@ import (
 )
 
 const (
-	host            = "localhost"
-	port            = 3000
 	shutdownTimeout = 10 * time.Second
-
-	dbUser    = "root"
-	dbPass    = "123456"
-	dbHost    = "localhost"
-	dbPort    = "3306"
-	dbName    = "courses"
-	dbTimeout = 5 * time.Second
+	dbTimeout       = 5 * time.Second
 )
 
 func main() {
+	var (
+		host   = os.Getenv("HOST")
+		port   = os.Getenv("PORT")
+		dbUser = os.Getenv("DB_USER")
+		dbPass = os.Getenv("DB_PASS")
+		dbHost = os.Getenv("DB_HOST")
+		dbPort = os.Getenv("DB_PORT")
+		dbName = os.Getenv("DB_NAME")
+	)
+
 	mysqlURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName)
 
 	db, err := sql.Open("mysql", mysqlURI)
@@ -44,7 +50,9 @@ func main() {
 	createCourseCommandHandler := creating.NewCourseCommandHandler(service)
 	commandBus.Register(creating.CourseCommandType, createCourseCommandHandler)
 
-	ctx, srv := server.NewServer(context.Background(), host, port, shutdownTimeout, commandBus)
+	portUint, _ := strconv.Atoi(port)
+
+	ctx, srv := server.NewServer(context.Background(), host, uint(portUint), shutdownTimeout, commandBus)
 
 	if err := srv.Run(ctx); err != nil {
 		log.Fatalf("something got wrong when we try to run web server %v", err)
